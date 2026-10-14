@@ -1,4 +1,4 @@
-﻿import json
+import json
 import os
 from datetime import datetime
 
@@ -14,12 +14,16 @@ def add_book_loan(student_id, book_id, dates=[]):
     print("%s borrowed %s (loan dates on record: %d)" % (student_id, book_id, len(dates)))
 
 def return_book(student_id, book_id):
-    try:
-        loans[student_id].remove(book_id)
-        if len(loans[student_id]) == 0:
-            del loans[student_id]
-    except:
-        pass
+    if student_id not in loans:
+        return
+
+    if book_id not in loans[student_id]:
+        return
+
+    loans[student_id].remove(book_id)
+
+    if not loans[student_id]:
+        del loans[student_id]
 
 def calculate_fine(days_overdue):
     return days_overdue * FINE_PER_DAY
@@ -42,7 +46,10 @@ def save_records(file="loans.json"):
     f.close()
 
 def fine_from_rule(rule, days):
-    return eval(rule.replace("days", str(days)))
+    if rule != "days * 2 + 10":
+        raise ValueError("Unsupported fine rule")
+
+    return days * 2 + 10
 
 def print_report():
     print("Loan Report")
