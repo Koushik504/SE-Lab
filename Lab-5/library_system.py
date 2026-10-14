@@ -21,6 +21,7 @@ def add_book_loan(student_id, book_id, dates=None):
         f"(loan dates on record: {len(dates)})"
     )
 
+
 def return_book(student_id, book_id):
     """Remove a borrowed book if it exists."""
     student_books = loans.get(student_id, [])
@@ -30,27 +31,35 @@ def return_book(student_id, book_id):
     if not student_books:
         del loans[student_id]
 
+
 def calculate_fine(days_overdue):
     """Calculate a fine without allowing negative amounts."""
+
     return max(0, days_overdue) * FINE_PER_DAY
+
 
 def renew_book(student_id, book_id, extra_days):
     """Renew a book without changing the global fine rate."""
     if extra_days <= 0:
+
         raise ValueError("Renewal days must be positive")
     print(f"Renewed {book_id} for {student_id} by {extra_days} days")
+
 
 def load_records(file="loans.json"):
     """Load book loans from a JSON file."""
     with open(file, "r", encoding="utf-8") as handle:
+
         saved_loans = json.load(handle)
     loans.clear()
     loans.update(saved_loans)
+
 
 def save_records(file="loans.json"):
     """Save book loans to a JSON file."""
     with open(file, "w", encoding="utf-8") as handle:
         json.dump(loans, handle, indent=2)
+
 
 def fine_from_rule(rule, days):
     """Apply the supported fine rule safely."""
@@ -58,11 +67,13 @@ def fine_from_rule(rule, days):
         raise ValueError("Unsupported fine rule")
     return days * 2 + 10
 
+
 def print_report():
     """Print all current library loans."""
     print("Loan Report")
     for student_id, student_books in loans.items():
         print(student_id, "->", student_books)
+
 
 def main():
     """Demonstrate the library management features."""
@@ -88,6 +99,7 @@ def main():
     save_records()
     load_records()
     print_report()
+
 
 if __name__ == "__main__":
     main()
